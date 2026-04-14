@@ -1,0 +1,14 @@
+.feature-checkbox:checked + div {
+    border-color: #065f46;
+    background-color: #ecfdf5;
+}
+
+.feature-checkbox:checked + div .check-box {
+    background-color: #047857;
+    border-color: #047857;
+}
+
+.feature-checkbox:checked + div .check-icon {
+    opacity: 1;
+    transform: scale(1);
+}

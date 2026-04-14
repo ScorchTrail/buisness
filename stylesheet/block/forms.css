@@ -1,0 +1,6 @@
+.input-error {
+    border-color: #ef4444 !important;
+    background-color: #fef2f2 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+    transition: all 0.3s ease;
+}
