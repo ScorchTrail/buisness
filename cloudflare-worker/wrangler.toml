@@ -1,0 +1,8 @@
+name = "srttrail-leads"
+main = "src/index.js"
+compatibility_date = "2026-04-15"
+
+# Optional dashboard vars:
+# ALLOWED_ORIGIN = "https://your-site.example.com"
+# LEAD_TO_EMAIL = "s.trail7878@gmail.com"
+# LEAD_FROM_EMAIL = "SRTtrail Leads <onboarding@resend.dev>"

@@ -1,0 +1,33 @@
+/*
+  Self-hosted font vendor sheet — 2 files total.
+  Place both files in assets/fonts/.
+
+  FILE 1 — Inter Variable (covers weight 100–900 from a single file)
+  Download: https://github.com/rsms/inter/releases/latest
+  File to grab: Inter.var.woff2  →  rename to  inter.woff2
+
+  FILE 2 — Quantico Regular (weight 400; browser synthesises bold via CSS)
+  Download: https://fonts.google.com/specimen/Quantico → Download family
+  File to grab: Quantico-Regular.ttf, convert to woff2 → rename to  quantico.woff2
+  Free converter: https://cloudconvert.com/ttf-to-woff2
+
+  All typographic variation (weight, size, spacing) is handled purely in CSS.
+*/
+
+/* --- Inter: variable font, full weight axis 100–900 --- */
+@font-face {
+    font-family: 'Inter';
+    src: url('../../assets/fonts/inter.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+}
+
+/* --- Quantico: single file, CSS weight synthesis for bold --- */
+@font-face {
+    font-family: 'Quantico';
+    src: url('../../assets/fonts/quantico.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+}

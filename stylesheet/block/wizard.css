@@ -1,0 +1,109 @@
+.wizard,
+.loading {
+    width: 100%;
+    max-width: 48rem;
+    min-height: 600px;
+    border: 1px solid #e5e7eb;
+    border-radius: 1rem;
+    background: #fff;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.1);
+}
+
+.wizard {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.wizard__progress-track {
+    background: #f3f4f6;
+    height: 0.5rem;
+    width: 100%;
+}
+
+.wizard__progress-bar {
+    background: #047857;
+    height: 100%;
+    width: 0;
+    transition: width 0.5s ease-out;
+}
+
+.wizard__content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.wizard__step-indicator {
+    margin-bottom: 0.5rem;
+    color: #047857;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.wizard__step-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    padding-bottom: 1rem;
+}
+
+.wizard__actions {
+    padding: 1.5rem;
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+}
+
+.wizard__actions-spacer {
+    flex: 1;
+}
+
+.wizard__button {
+    border: 0;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.wizard__button--secondary {
+    background: transparent;
+    color: #4b5563;
+    padding: 0.75rem 1.5rem;
+}
+
+.wizard__button--secondary:hover {
+    color: #111827;
+}
+
+.wizard__button--primary {
+    border-radius: 0.625rem;
+    padding: 0.75rem 2rem;
+    background: #000;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.wizard__button--primary:hover {
+    background: #1f2937;
+}
+
+.wizard__button--final {
+    background: #047857;
+}
+
+.wizard__button--final:hover {
+    background: #065f46;
+}
+
+@media (min-width: 640px) {
+    .wizard__content {
+        padding: 2.5rem;
+    }
+}

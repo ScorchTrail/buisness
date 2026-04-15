@@ -26,11 +26,13 @@ This project is built to be ultra-lightweight and serverless. There are no build
 
 - Vanilla JavaScript (ES6+)
 
-- Tailwind CSS (Loaded via CDN for rapid UI styling)
+- Modular CSS3 (BEM architecture in `stylesheet/block/`)
 
 - Chart.js (Loaded via CDN for the radar chart visualization)
 
 - Canvas Confetti (Loaded via CDN for the celebration effect)
+
+- Cloudflare Worker + Resend (early lead email capture)
 
 ### 🚀 Getting Started
 
@@ -42,9 +44,11 @@ This project is built to be ultra-lightweight and serverless. There are no build
 
 ### ⚙️ Customization & Next Steps
 
-- Add Your Profile Photo: Open index.html, locate the <!-- Profile Photo Placeholder --> section, remove the emoji span, and uncomment the <img> tag, pointing it to your actual headshot.
+- Update Branding Assets: Replace files in `assets/` such as the logo, avatar, and Open Graph image.
 
-- Connect a Backend (Optional): In the JavaScript section, look for the // --- EARLY LEAD CAPTURE (BACKEND FOUNDATION) --- comment block. You can uncomment the fetch() request and drop in a webhook URL (from services like Formspree, Make.com, or Zapier) to silently capture lead data as soon as they finish the first step.
+- Update Lead Endpoint (Optional): In `index.html`, edit the early lead `fetch()` URL in `nextStep()` if your Worker URL changes.
+
+- Backend Worker Source: The Worker implementation is in `cloudflare-worker/src/index.js` with `cloudflare-worker/wrangler.toml` for deployment.
 
 - Update Contact Email: In the emailAnswers() JavaScript function, ensure the mailto: address is set to your preferred business email (currently set to s.trail7878@gmail.com).
 

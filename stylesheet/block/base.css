@@ -1,10 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
-
 body {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.6;
     background-color: #f9fafb;
     color: #111827;
     overflow-x: hidden;
+}
+
+.typography__display,
+h1,
+h2,
+h3 {
+    font-family: 'Quantico', 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    letter-spacing: 0.01em;
 }
 
 .chart-container {

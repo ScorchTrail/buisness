@@ -1,4 +1,12 @@
+@import url('./vendor/fonts.css');
 @import url('./block/base.css');
+@import url('./block/app.css');
+@import url('./block/header.css');
+@import url('./block/wizard.css');
+@import url('./block/questionnaire.css');
+@import url('./block/results.css');
+@import url('./block/toast.css');
+@import url('./block/footer.css');
 @import url('./block/effects.css');
 @import url('./block/checklist.css');
 @import url('./block/forms.css');
