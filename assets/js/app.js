@@ -943,13 +943,14 @@ function handleResultsAction(event) {
 function initInteractiveModifiers() {
     // Avatar scale on hover
     const avatarRing = document.querySelector('.hero__avatar-ring');
-    if (avatarRing) {
+    if (avatarRing && !avatarRing.dataset.boundHover) {
         const avatarImg = avatarRing.querySelector('.hero__avatar-image');
         if (avatarImg) {
             avatarRing.addEventListener('mouseenter', () => avatarImg.classList.add('hero__avatar-image-scaled'));
             avatarRing.addEventListener('mouseleave', () => avatarImg.classList.remove('hero__avatar-image-scaled'));
             avatarRing.addEventListener('focus', () => avatarImg.classList.add('hero__avatar-image-scaled'), true);
             avatarRing.addEventListener('blur', () => avatarImg.classList.remove('hero__avatar-image-scaled'), true);
+            avatarRing.dataset.boundHover = 'true';
         }
     }
 

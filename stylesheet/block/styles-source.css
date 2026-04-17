@@ -329,19 +329,15 @@ h3 {
     text-align: center;
 }
 
-.hero__card-content > * + * {
-    margin-top: var(--space-3);
-}
-
 .hero__text {
-    margin: 0 0 var(--space-2) 0;
+    margin: 0 0 1rem 0;
     color: rgba(248, 251, 249, 0.84);
     line-height: 1.65;
     font-size: clamp(0.95rem, 0.55vw + 0.85rem, 1.125rem);
     text-align: center;
 }
 
-.hero__text::last-child {
+.hero__card-content .hero__text:last-child {
     margin-bottom: 0;
 }
 
@@ -364,12 +360,6 @@ h3 {
     .hero__avatar-ring {
         width: 8rem;
         height: 8rem;
-    }
-
-    .hero__intro {
-        flex-direction: row;
-        gap: var(--space-4);
-        align-items: center;
     }
 
     .hero__card {
