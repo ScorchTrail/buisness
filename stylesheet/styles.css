@@ -624,10 +624,17 @@ h3 {
 }
 
 .feature-list__option {
+    display: block;
+    width: 100%;
+    min-width: 0;
     cursor: pointer;
 }
 
 .feature-list__card {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
     height: 100%;
     padding: var(--space-3);
     border: 0.125rem solid var(--color-surface-muted);
@@ -648,6 +655,8 @@ h3 {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    gap: var(--space-1);
+    min-width: 0;
 }
 
 .feature-list__title {
@@ -655,7 +664,9 @@ h3 {
     font-size: var(--type-1);
     font-weight: 700;
     display: block;
+    min-width: 0;
     padding-right: var(--space-1);
+    overflow-wrap: anywhere;
 }
 
 .feature-list__description {
@@ -664,7 +675,8 @@ h3 {
     font-size: var(--type--1);
     line-height: 1.5;
     display: block;
-    padding-right: var(--space-3);
+    padding-right: 0;
+    overflow-wrap: anywhere;
 }
 
 .feature-list__check {
@@ -772,6 +784,19 @@ h3 {
     color: var(--color-text-muted);
 }
 
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 40rem;
+    margin: 0 auto;
+    height: clamp(16rem, 38vw, 24rem);
+}
+
+#complexityRadar {
+    width: 100% !important;
+    height: 100% !important;
+}
+
 .results__actions {
     padding: var(--space-4);
     background: var(--color-surface);
@@ -789,14 +814,18 @@ h3 {
 .results__action-buttons {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
     gap: var(--space-2);
+    width: 100%;
+    max-width: 44rem;
+    margin: 0 auto;
 }
 
 .results__action-button {
     width: 100%;
     max-width: 20rem;
+    margin: 0 auto;
     min-height: 3rem;
     border-radius: var(--radius-md);
     padding: var(--space-2) var(--space-3);
@@ -1006,11 +1035,15 @@ h3 {
 @media (min-width: 640px) {
     .results__action-buttons {
         flex-direction: row;
+        align-items: stretch;
+        justify-content: center;
+        flex-wrap: wrap;
     }
 
     .results__action-button {
-        width: auto;
-        min-width: 15rem;
+        flex: 1 1 16rem;
+        max-width: 20rem;
+        min-width: 0;
     }
 
     .results__links {

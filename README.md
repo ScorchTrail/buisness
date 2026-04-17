@@ -48,8 +48,6 @@ This project is built to be ultra-lightweight and serverless. There are no build
 
 - Backend Worker Source: The Worker implementation is in `cloudflare-worker/src/index.js` with `cloudflare-worker/wrangler.toml` for deployment.
 
-- Update Contact Email: In the emailAnswers() JavaScript function, ensure the mailto: address is set to your preferred business email (currently set to s.trail7878@gmail.com).
-
 ### 👨‍💻 Author
 
 SRTtrail.dev

@@ -86,14 +86,14 @@ const pillarData = [
                 required: true,
                 maxSelect: MAX_PRIORITIES,
                 options: [
-                    { value: 'visuals', label: 'Custom Branding & Visuals', desc: 'A sharper visual identity and a stronger premium feel.' },
-                    { value: 'seo', label: 'Local SEO Focus', desc: 'Extra effort on Google Maps visibility and local search reach.' },
-                    { value: 'booking', label: 'Online Booking / Scheduling', desc: 'A smoother way for customers to book with you any time.' },
-                    { value: 'ecommerce', label: 'E-commerce / Selling', desc: 'Sell products, deposits, or gift cards directly from the site.' },
-                    { value: 'reviews', label: 'Customer Trust & Reviews', desc: 'Showcase social proof and turn reputation into conversions.' },
-                    { value: 'portfolio', label: 'Project Galleries / Menus', desc: 'Present offerings clearly with visual depth and easy browsing.' },
-                    { value: 'portals', label: 'Customer Portals / Login', desc: 'Private spaces for clients to access history, files, or updates.' },
-                    { value: 'contact', label: 'Advanced Quote Forms', desc: 'Capture more useful lead details before the first call.' }
+                    { value: 'visuals', label: '🎨 Custom Branding & Visuals', desc: 'A sharper visual identity and a stronger premium feel.' },
+                    { value: 'seo', label: '📍 Local SEO Focus', desc: 'Extra effort on Google Maps visibility and local search reach.' },
+                    { value: 'booking', label: '📅 Online Booking / Scheduling', desc: 'A smoother way for customers to book with you any time.' },
+                    { value: 'ecommerce', label: '🛍️ E-commerce / Selling', desc: 'Sell products, deposits, or gift cards directly from the site.' },
+                    { value: 'reviews', label: '⭐ Customer Trust & Reviews', desc: 'Showcase social proof and turn reputation into conversions.' },
+                    { value: 'portfolio', label: '📸 Project Galleries / Menus', desc: 'Present offerings clearly with visual depth and easy browsing.' },
+                    { value: 'portals', label: '🔐 Customer Portals / Login', desc: 'Private spaces for clients to access history, files, or updates.' },
+                    { value: 'contact', label: '✉️ Advanced Quote Forms', desc: 'Capture more useful lead details before the first call.' }
                 ]
             }
         ]
@@ -146,7 +146,8 @@ const state = {
     toastTimer: null,
     successTimer: null,
     celebrationTimer: null,
-    hasSentLeadStart: false
+    hasSentLeadStart: false,
+    radarChart: null
 };
 
 const elements = {
@@ -160,7 +161,7 @@ const elements = {
     loadingContainer: document.getElementById('loading-container'),
     resultsContainer: document.getElementById('results-container'),
     resultsHero: document.getElementById('results-hero'),
-    breakdown: document.getElementById('complexity-breakdown'),
+    complexityRadar: document.getElementById('complexityRadar'),
     toast: document.getElementById('error-toast'),
     toastTitle: document.getElementById('toast-title'),
     toastMessage: document.getElementById('toast-message'),
@@ -274,10 +275,10 @@ function updateWizardChrome() {
     elements.prevButton.classList.toggle('u-hidden', state.currentStep === 0);
 
     if (state.currentStep === pillarData.length - 1) {
-        elements.nextButton.textContent = 'Calculate Scope';
+        elements.nextButton.textContent = 'Calculate Scope ✨';
         elements.nextButton.classList.add('wizard__button--final');
     } else {
-        elements.nextButton.textContent = 'Next Step';
+        elements.nextButton.textContent = 'Next Step →';
         elements.nextButton.classList.remove('wizard__button--final');
     }
 }
@@ -662,26 +663,92 @@ function computeMetrics() {
     return metrics.map((value) => Math.min(value, 100));
 }
 
-function renderBreakdown() {
-    const metrics = computeMetrics();
-    const list = createElement('ul', { className: 'scope-chart__list' });
+function renderRadarChart() {
+    if (!elements.complexityRadar || typeof window.Chart !== 'function') {
+        return;
+    }
 
-    focusAreas.forEach((label, index) => {
-        const item = createElement('li', { className: 'scope-chart__item' });
-        const header = createElement('div', { className: 'scope-chart__header' });
-        const labelNode = createElement('span', { className: 'scope-chart__label', text: label });
-        const valueNode = createElement('span', { className: 'scope-chart__value', text: `${metrics[index]}%` });
-        const meter = createElement('progress', {
-            className: 'scope-chart__meter',
-            attributes: { max: '100', value: String(metrics[index]) }
+    const metrics = computeMetrics();
+    const context = elements.complexityRadar.getContext('2d');
+
+    if (state.radarChart) {
+        state.radarChart.destroy();
+        state.radarChart = null;
+    }
+
+    state.radarChart = new window.Chart(context, {
+        type: 'radar',
+        data: {
+            labels: focusAreas,
+            datasets: [
+                {
+                    label: 'Project Focus Area',
+                    data: metrics,
+                    backgroundColor: 'rgba(4, 120, 87, 0.2)',
+                    borderColor: 'rgba(4, 120, 87, 0.85)',
+                    pointBackgroundColor: 'rgba(4, 120, 87, 1)',
+                    pointBorderColor: '#ffffff',
+                    pointRadius: 3,
+                    borderWidth: 2
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    min: 0,
+                    max: 100,
+                    ticks: { display: false },
+                    grid: { color: 'rgba(24, 33, 38, 0.12)' },
+                    angleLines: { color: 'rgba(24, 33, 38, 0.16)' },
+                    pointLabels: {
+                        color: '#24313a',
+                        font: {
+                            family: 'Inter, Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
+                            size: 12,
+                            weight: '600'
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: { enabled: true }
+            }
+        }
+    });
+}
+
+function triggerConfetti() {
+    if (typeof window.confetti !== 'function') {
+        return;
+    }
+
+    const duration = 2200;
+    const end = Date.now() + duration;
+
+    (function fire() {
+        window.confetti({
+            particleCount: 8,
+            angle: 60,
+            spread: 58,
+            origin: { x: 0 },
+            colors: ['#047857', '#10b981', '#34d399', '#111827']
+        });
+        window.confetti({
+            particleCount: 8,
+            angle: 120,
+            spread: 58,
+            origin: { x: 1 },
+            colors: ['#047857', '#10b981', '#34d399', '#111827']
         });
 
-        appendChildren(header, [labelNode, valueNode]);
-        appendChildren(item, [header, meter]);
-        list.appendChild(item);
-    });
-
-    elements.breakdown.replaceChildren(list);
+        if (Date.now() < end) {
+            window.requestAnimationFrame(fire);
+        }
+    })();
 }
 
 function startCelebration() {
@@ -714,18 +781,6 @@ function formatAnswers() {
     return output;
 }
 
-function downloadAnswers() {
-    const blob = new Blob([formatAnswers()], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = 'SRTtrail-Discovery-Outline.txt';
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
-    URL.revokeObjectURL(url);
-}
-
 async function submitFinalScope(button) {
     button.disabled = true;
     setButtonLabel(button, 'Sending...', '', '⏳');
@@ -746,8 +801,9 @@ function showResults() {
     elements.loadingContainer.classList.add('u-hidden');
     elements.resultsContainer.classList.remove('u-hidden');
     elements.resultsContainer.classList.add('fade-in');
-    renderBreakdown();
+    renderRadarChart();
     startCelebration();
+    triggerConfetti();
 }
 
 function finishAndCalculate() {
@@ -827,10 +883,6 @@ function handleResultsAction(event) {
     }
 
     const { action } = button.dataset;
-    if (action === 'download') {
-        downloadAnswers();
-        return;
-    }
     if (action === 'submit-scope') {
         void submitFinalScope(button);
         return;
@@ -859,7 +911,7 @@ function init() {
     if (state.isFinished) {
         elements.wizardContainer.classList.add('u-hidden');
         elements.resultsContainer.classList.remove('u-hidden');
-        renderBreakdown();
+        renderRadarChart();
         return;
     }
 

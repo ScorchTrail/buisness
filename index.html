@@ -176,6 +176,8 @@
     <link rel="icon" type="image/x-icon" href="./favicon.ico">
     <link rel="shortcut icon" href="./favicon.ico">
 
+    <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <link rel="stylesheet" href="stylesheet/styles.css">
 </head>
 <body class="app">
@@ -211,7 +213,7 @@
 
                 <div class="hero__card">
                     <p class="hero__text">
-                        <span class="hero__intro-text">Hi, I'm Vedant Patel, the face behind SRTtrail<span class="hero__accent">.dev</span>.</span>
+                        <span class="hero__intro-text">Hi, I'm Vedant Patel, the face behind SRTtrail.dev.</span>
                         I'm a student at ASU and a professional web developer working hard to make a name for myself by helping local businesses thrive online.
                         My goal is to give you a beautiful, accessible website you can truly call your own; without the massive budgets and cold,
                         technical jargon of big corporate agencies. Let's figure out exactly what your business needs to grow.
@@ -267,20 +269,15 @@
                         <h3 id="results-breakdown-title" class="typography__display results__card-title">Your Custom Project Outline</h3>
                         <p class="results__card-intro">Each focus area shows how much attention your project will likely need during design and build.</p>
                     </figcaption>
-                    <section id="complexity-breakdown" class="scope-chart" aria-labelledby="results-breakdown-title"></section>
+                    <div class="chart-container" aria-labelledby="results-breakdown-title">
+                        <canvas id="complexityRadar"></canvas>
+                    </div>
                 </figure>
             </div>
 
             <div class="results__actions">
                 <h3 class="typography__display results__actions-title">Ready to take the next step?</h3>
                 <div class="results__action-buttons">
-                    <button type="button" data-action="download" class="results__action-button results__action-button--secondary">
-                        <span class="results__action-icon">📄</span>
-                        <div class="results__action-copy">
-                            <span class="results__action-title">Save a Copy</span>
-                            <span class="results__action-subtitle">Download .txt file</span>
-                        </div>
-                    </button>
                     <button type="button" data-action="submit-scope" class="results__action-button results__action-button--primary">
                         <span class="results__action-icon">🚀</span>
                         <div class="results__action-copy">
