@@ -8,15 +8,15 @@ An interactive, client-facing web application designed to help local businesses 
 
 - Top 5 Priorities Logic: A custom checklist that limits users to selecting their top 5 core features, forcing them to prioritize what matters most.
 
-- Dynamic Scope Visualization: Uses native progress-meter UI to generate an accessible, personalized breakdown of the project's major focus areas.
+- Dynamic Scope Visualization: Renders a responsive radar chart (Chart.js) to visualize the project's major focus areas.
 
 - Auto-Save Progress: Utilizes browser localStorage to save user input on every keystroke. Clients can close the tab and return later without losing their progress.
 
 - Early Lead Capture Foundation: Built-in logic to fire a backend webhook the moment a user completes Step 1 (Contact Info), ensuring you capture the lead even if they abandon the rest of the form.
 
-- Instant Export & Submission: Users can instantly download their finalized answers as a cleanly formatted .txt file or forward them directly to your email using native mailto: integration.
+- Final Scope Submission: Users can submit their completed discovery scope directly from the results panel.
 
-- Celebration UI: Built-in celebratory motion on successful completion without third-party dependencies.
+- Celebration UI: Lightweight confetti effect on successful completion.
 
 ### 🛠️ Tech Stack
 
@@ -28,7 +28,7 @@ This project is built to be ultra-lightweight and serverless. There are no build
 
 - Modular CSS3 (BEM architecture in `stylesheet/block/`)
 
-- Vanilla JavaScript module for rendering the focus breakdown and celebration motion
+- Chart.js + canvas-confetti for visualization and celebration
 
 - Cloudflare Worker + Resend (early lead email capture)
 
@@ -44,7 +44,7 @@ This project is built to be ultra-lightweight and serverless. There are no build
 
 - Update Branding Assets: Replace files in `assets/` such as the logo, avatar, and Open Graph image.
 
-- Update Lead Endpoint (Optional): In `index.html`, edit the early lead `fetch()` URL in `nextStep()` if your Worker URL changes.
+- Update Lead Endpoint (Optional): In `assets/js/app.js`, edit `LEAD_ENDPOINT` if your Worker URL changes.
 
 - Backend Worker Source: The Worker implementation is in `cloudflare-worker/src/index.js` with `cloudflare-worker/wrangler.toml` for deployment.
 

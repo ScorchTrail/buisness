@@ -176,11 +176,11 @@
 
     <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <link rel="stylesheet" href="stylesheet/styles.css">
+    <link rel="stylesheet" href="stylesheet/index.css">
 </head>
 <body class="app">
 
-    <aside id="success-bubble" class="success-bubble success-bubble--hidden" role="status" aria-live="polite" aria-atomic="true">
+    <aside id="success-bubble" class="success-bubble success-bubble-hidden" role="status" aria-live="polite" aria-atomic="true">
         <span class="success-bubble__icon">✅</span>
         <div class="success-bubble__content">
             <strong class="success-bubble__title">Submission Received!</strong>
@@ -200,25 +200,20 @@
         </div>
 
         <div class="hero__content">
-            <h1 class="typography__display hero__title">Affordable Web Design in Scottsdale, AZ</h1>
-            <h2 class="hero__subtitle">Let's Build Your Digital Home</h2>
+            <h1 class="typography__display  hero__title">Your Website Should Be an Investment That Pays for Itself.</h1>
 
             <div class="hero__intro">
-                <div class="hero__avatar-wrap">
-                    <div class="hero__avatar-ring">
-                        <img src="assets/dev-avatar.png" alt="Profile photo of the developer behind SRTtrail.dev" class="hero__avatar-image">
+                <div id="hero-card" class="hero__card">
+                    <div class="hero__avatar-wrap">
+                        <div class="hero__avatar-ring">
+                            <img src="assets/dev-avatar.png" alt="Profile photo of the developer behind SRTtrail.dev" class="hero__avatar-image">
+                        </div>
                     </div>
-                </div>
-
-                <div class="hero__card">
-                    <p class="hero__text">
-                        <span class="hero__intro-text">Hi, I'm Vedant Patel, the face behind SRTtrail.dev.</span>
-                        I'm a professional web developer dedicated to helping local businesses thrive online.
-                        My goal is to give you a beautiful, accessible website you can truly call your own;
-                        without the massive budgets and cold, technical jargon of big corporate agencies.
-                        Whether you need a starter site, a custom build, or local SEO setup, let's figure out
-                        exactly what your business needs to grow.
-                    </p>
+                    <div class="hero__card-content">
+                        <p class="hero__text"><span class="hero__intro-text">Hi, I’m Vedant Patel, the face and code behind SRTtrail.dev.</span> As a professional web developer and a ASU student, I’m passionate about helping local businesses thrive online.</p>
+                        <p class="hero__text">My goal is simple: to build you a lightning-fast, highly accessible website that actually drives results. You get a digital presence you can truly be proud of, completely free of the massive budgets, bloated code, and cold technical jargon of big corporate agencies.</p>
+                        <p class="hero__text">Whether you need a high-converting landing page, a custom storefront, or a complete overhaul of your current site, let's figure out exactly what your business needs to grow your revenue.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -238,11 +233,11 @@
                 </div>
 
                 <div class="wizard__actions">
-                    <button id="btn-prev" type="button" class="wizard__button wizard__button--secondary u-hidden">
+                    <button id="btn-prev" type="button" class="wizard__button wizard__button-secondary u-hidden">
                         &larr; Back
                     </button>
                     <div class="wizard__actions-spacer"></div>
-                    <button id="btn-next" type="submit" class="wizard__button wizard__button--primary">
+                    <button id="btn-next" type="submit" class="wizard__button wizard__button-primary">
                         Next Step &rarr;
                     </button>
                 </div>
@@ -256,14 +251,6 @@
         </section>
 
         <section id="results-container" class="results u-hidden" aria-labelledby="results-title">
-            <div id="results-hero" class="results__hero">
-                <div class="results__emoji">🎉</div>
-                <h2 id="results-title" class="typography__display results__title">You did it!</h2>
-                <p class="results__description">
-                    Thank you for sharing your business story with me. Based on your answers, here is a visual breakdown of where our focus will be to make your project a success.
-                </p>
-            </div>
-
             <div class="results__main">
                 <figure class="results__card pop-in">
                     <figcaption>
@@ -276,23 +263,22 @@
                 </figure>
             </div>
 
+            <div id="results-hero" class="results__hero">
+                <p class="results__eyebrow">Discovery Complete</p>
+                <h2 id="results-title" class="typography__display results__title">You did it!</h2>
+                <p class="results__description">
+                    Thanks for sharing your business goals. Your custom project outline below maps where design and development effort will have the strongest impact.
+                </p>
+            </div>
+
             <div class="results__actions">
-                <h3 class="typography__display results__actions-title">Ready to take the next step?</h3>
-                <div class="results__action-buttons">
-                    <button type="button" data-action="submit-scope" class="results__action-button results__action-button--primary">
-                        <span class="results__action-icon">🚀</span>
-                        <div class="results__action-copy">
-                            <span class="results__action-title">Submit Project Scope</span>
-                            <span class="results__action-subtitle results__action-subtitle--light">Let's get started</span>
-                        </div>
-                    </button>
-                </div>
+                <h3 class="typography__display results__actions-title">Need to make a quick change?</h3>
 
                 <div class="results__links">
-                    <button type="button" data-action="edit" class="results__link results__link--edit">
+                    <button type="button" data-action="edit" class="results__link results__link-edit">
                         <span>&larr;</span> Go back and edit answers
                     </button>
-                    <button type="button" data-action="reset" class="results__link results__link--reset">
+                    <button type="button" data-action="reset" class="results__link results__link-reset">
                         <span>↺</span> Start over completely
                     </button>
                 </div>
@@ -300,7 +286,7 @@
         </section>
     </main>
 
-    <div id="error-toast" class="toast toast--error toast--hidden" role="alert" aria-live="assertive" aria-atomic="true">
+    <div id="error-toast" class="toast toast-error toast-hidden" role="alert" aria-live="assertive" aria-atomic="true">
         <span class="toast__icon">⚠️</span>
         <div class="toast__content">
             <p class="toast__title" id="toast-title">Oops!</p>

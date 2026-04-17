@@ -145,8 +145,9 @@ const state = {
     isFinished: false,
     toastTimer: null,
     successTimer: null,
-    celebrationTimer: null,
     hasSentLeadStart: false,
+    hasSentLeadComplete: false,
+    isSubmittingLeadComplete: false,
     radarChart: null
 };
 
@@ -160,7 +161,7 @@ const elements = {
     nextButton: document.getElementById('btn-next'),
     loadingContainer: document.getElementById('loading-container'),
     resultsContainer: document.getElementById('results-container'),
-    resultsHero: document.getElementById('results-hero'),
+    heroCard: document.getElementById('hero-card'),
     complexityRadar: document.getElementById('complexityRadar'),
     toast: document.getElementById('error-toast'),
     toastTitle: document.getElementById('toast-title'),
@@ -215,7 +216,8 @@ function persistData() {
         answers: state.answers,
         step: state.currentStep,
         finished: state.isFinished,
-        leadStarted: state.hasSentLeadStart
+        leadStarted: state.hasSentLeadStart,
+        leadCompleted: state.hasSentLeadComplete
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
 }
@@ -232,6 +234,7 @@ function loadPersistedData() {
         state.currentStep = Number.isInteger(parsed.step) ? parsed.step : 0;
         state.isFinished = Boolean(parsed.finished);
         state.hasSentLeadStart = Boolean(parsed.leadStarted);
+        state.hasSentLeadComplete = Boolean(parsed.leadCompleted);
     } catch (error) {
         console.error('Could not load saved data.', error);
         localStorage.removeItem(STORAGE_KEY);
@@ -246,25 +249,13 @@ function getInputId(questionId) {
     return `input_${questionId}`;
 }
 
-function setButtonLabel(button, title, subtitle, icon) {
-    button.replaceChildren();
-    if (icon) {
-        button.appendChild(createElement('span', { className: 'results__action-icon', text: icon }));
+function updateHeroCardVisibility() {
+    if (!(elements.heroCard instanceof HTMLElement)) {
+        return;
     }
 
-    const copy = createElement('span', { className: 'results__action-copy' });
-    const titleElement = createElement('span', { className: 'results__action-title', text: title });
-    copy.appendChild(titleElement);
-
-    if (subtitle) {
-        const subtitleElement = createElement('span', {
-            className: `results__action-subtitle${button.classList.contains('results__action-button--primary') ? ' results__action-subtitle--light' : ''}`,
-            text: subtitle
-        });
-        copy.appendChild(subtitleElement);
-    }
-
-    button.appendChild(copy);
+    const shouldShow = !state.isFinished && state.currentStep === 0;
+    elements.heroCard.classList.toggle('u-hidden', !shouldShow);
 }
 
 function updateWizardChrome() {
@@ -276,11 +267,13 @@ function updateWizardChrome() {
 
     if (state.currentStep === pillarData.length - 1) {
         elements.nextButton.textContent = 'Calculate Scope ✨';
-        elements.nextButton.classList.add('wizard__button--final');
+        elements.nextButton.classList.add('wizard__button-final');
     } else {
         elements.nextButton.textContent = 'Next Step →';
-        elements.nextButton.classList.remove('wizard__button--final');
+        elements.nextButton.classList.remove('wizard__button-final');
     }
+
+    updateHeroCardVisibility();
 }
 
 function renderRequiredMarker(isRequired) {
@@ -333,7 +326,7 @@ function buildTextQuestion(question) {
     let control;
     if (question.type === 'textarea') {
         control = createElement('textarea', {
-            className: 'form-control form-control--textarea custom-scrollbar',
+            className: 'form-control form-control-textarea custom-scrollbar',
             attributes: { ...attributes, rows: '4' }
         });
         control.value = state.answers[question.id] || '';
@@ -358,7 +351,7 @@ function buildTextQuestion(question) {
 
 function buildChecklistQuestion(question) {
     const wrapper = createElement('fieldset', {
-        className: 'questionnaire__item questionnaire__item--group',
+        className: 'questionnaire__item questionnaire__item-group',
         attributes: {
             id: getInputId(question.id),
             'aria-describedby': `${question.id}_hint`,
@@ -440,7 +433,7 @@ function renderStep() {
 
     if (step.helper) {
         fragment.appendChild(createElement('p', {
-            className: 'questionnaire__helper questionnaire__helper--intro',
+            className: 'questionnaire__helper questionnaire__helper-intro',
             text: step.helper
         }));
     }
@@ -454,6 +447,7 @@ function renderStep() {
     elements.contentDisplay.scrollTop = 0;
 
     updateWizardChrome();
+    initInteractiveModifiers();
 }
 
 function clearValidationError(target) {
@@ -461,8 +455,8 @@ function clearValidationError(target) {
         return;
     }
 
-    target.classList.remove('form-control--error');
-    target.classList.remove('questionnaire__item--error');
+    target.classList.remove('form-control-error');
+    target.classList.remove('questionnaire__item-error');
     target.setAttribute('aria-invalid', 'false');
 
     const wrapper = target.closest('.questionnaire__item') || target;
@@ -527,17 +521,17 @@ function showToast(title, message) {
     window.clearTimeout(state.toastTimer);
     elements.toastTitle.textContent = title;
     elements.toastMessage.textContent = message;
-    elements.toast.classList.remove('toast--hidden');
+    elements.toast.classList.remove('toast-hidden');
     state.toastTimer = window.setTimeout(() => {
-        elements.toast.classList.add('toast--hidden');
+        elements.toast.classList.add('toast-hidden');
     }, TOAST_TIMEOUT_MS);
 }
 
 function showSuccessBubble() {
     window.clearTimeout(state.successTimer);
-    elements.successBubble.classList.remove('success-bubble--hidden');
+    elements.successBubble.classList.remove('success-bubble-hidden');
     state.successTimer = window.setTimeout(() => {
-        elements.successBubble.classList.add('success-bubble--hidden');
+        elements.successBubble.classList.add('success-bubble-hidden');
     }, SUCCESS_TIMEOUT_MS);
 }
 
@@ -546,7 +540,7 @@ function markInvalid(target, message) {
         return false;
     }
 
-    target.classList.add(target.matches('.form-control') ? 'form-control--error' : 'questionnaire__item--error');
+    target.classList.add(target.matches('.form-control') ? 'form-control-error' : 'questionnaire__item-error');
     target.setAttribute('aria-invalid', 'true');
 
     const wrapper = target.closest('.questionnaire__item') || target;
@@ -583,7 +577,7 @@ function validateCurrentStep() {
 
         if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
             if (!target.reportValidity()) {
-                target.classList.add('form-control--error');
+                target.classList.add('form-control-error');
                 return markInvalid(target, 'Please complete the required field before moving on.');
             }
         }
@@ -668,7 +662,9 @@ function renderRadarChart() {
         return;
     }
 
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const metrics = computeMetrics();
+    const startMetrics = metrics.map(() => 0);
     const context = elements.complexityRadar.getContext('2d');
 
     if (state.radarChart) {
@@ -683,32 +679,63 @@ function renderRadarChart() {
             datasets: [
                 {
                     label: 'Project Focus Area',
-                    data: metrics,
-                    backgroundColor: 'rgba(4, 120, 87, 0.2)',
-                    borderColor: 'rgba(4, 120, 87, 0.85)',
-                    pointBackgroundColor: 'rgba(4, 120, 87, 1)',
+                    data: prefersReducedMotion ? metrics : startMetrics,
+                    backgroundColor: 'rgba(4, 120, 87, 0.14)',
+                    borderColor: 'rgba(6, 95, 70, 1)',
+                    pointBackgroundColor: '#047857',
                     pointBorderColor: '#ffffff',
-                    pointRadius: 3,
-                    borderWidth: 2
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    borderWidth: 3.5
                 }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    top: 8,
+                    bottom: 8,
+                    left: 18,
+                    right: 18
+                }
+            },
             scales: {
                 r: {
                     min: 0,
                     max: 100,
                     ticks: { display: false },
-                    grid: { color: 'rgba(24, 33, 38, 0.12)' },
-                    angleLines: { color: 'rgba(24, 33, 38, 0.16)' },
+                    grid: { color: 'rgba(24, 33, 38, 0.10)' },
+                    angleLines: { color: 'rgba(24, 33, 38, 0.14)' },
                     pointLabels: {
-                        color: '#24313a',
-                        font: {
-                            family: 'Inter, Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
-                            size: 12,
-                            weight: '600'
+                        color: '#065f46',
+                        padding: 8,
+                        centerPointLabels: false,
+                        font: (ctx) => {
+                            const w = ctx.chart.width;
+                            const size = w < 320 ? 10 : w < 480 ? 12 : 14;
+                            return {
+                                family: 'Quantico, Inter, sans-serif',
+                                size,
+                                weight: '700'
+                            };
+                        },
+                        callback: (label) => {
+                            const words = label.split(' ');
+                            const lines = [];
+                            let current = '';
+                            words.forEach((word) => {
+                                if ((current + ' ' + word).trim().length > 9) {
+                                    if (current) lines.push(current);
+                                    current = word;
+                                } else {
+                                    current = (current + ' ' + word).trim();
+                                }
+                            });
+                            if (current) lines.push(current);
+                            return lines;
                         }
                     }
                 }
@@ -716,9 +743,22 @@ function renderRadarChart() {
             plugins: {
                 legend: { display: false },
                 tooltip: { enabled: true }
+            },
+            animation: {
+                duration: prefersReducedMotion ? 0 : 550,
+                easing: 'easeOutCubic'
             }
         }
     });
+
+    if (!prefersReducedMotion && state.radarChart?.data?.datasets?.[0]) {
+        window.requestAnimationFrame(() => {
+            window.requestAnimationFrame(() => {
+                state.radarChart.data.datasets[0].data = metrics;
+                state.radarChart.update();
+            });
+        });
+    }
 }
 
 function triggerConfetti() {
@@ -726,19 +766,19 @@ function triggerConfetti() {
         return;
     }
 
-    const duration = 2200;
+    const duration = 1200;
     const end = Date.now() + duration;
 
     (function fire() {
         window.confetti({
-            particleCount: 8,
+            particleCount: 4,
             angle: 60,
             spread: 58,
             origin: { x: 0 },
             colors: ['#047857', '#10b981', '#34d399', '#111827']
         });
         window.confetti({
-            particleCount: 8,
+            particleCount: 4,
             angle: 120,
             spread: 58,
             origin: { x: 1 },
@@ -749,16 +789,6 @@ function triggerConfetti() {
             window.requestAnimationFrame(fire);
         }
     })();
-}
-
-function startCelebration() {
-    window.clearTimeout(state.celebrationTimer);
-    elements.resultsHero.classList.remove('results__hero--celebrate');
-    void elements.resultsHero.offsetWidth;
-    elements.resultsHero.classList.add('results__hero--celebrate');
-    state.celebrationTimer = window.setTimeout(() => {
-        elements.resultsHero.classList.remove('results__hero--celebrate');
-    }, 2000);
 }
 
 function formatAnswers() {
@@ -781,19 +811,23 @@ function formatAnswers() {
     return output;
 }
 
-async function submitFinalScope(button) {
-    button.disabled = true;
-    setButtonLabel(button, 'Sending...', '', '⏳');
+async function submitFinalScope() {
+    if (state.hasSentLeadComplete || state.isSubmittingLeadComplete) {
+        return;
+    }
+
+    state.isSubmittingLeadComplete = true;
 
     try {
         await sendLead('Completed Discovery Form', true);
-        setButtonLabel(button, 'Sent!', '', '✅');
+        state.hasSentLeadComplete = true;
+        persistData();
         showSuccessBubble();
     } catch (error) {
         console.error(error);
-        button.disabled = false;
-        setButtonLabel(button, 'Submit Project Scope', "Let's get started", '🚀');
         showToast('Submission Failed', 'Could not send your project scope. Please try again.');
+    } finally {
+        state.isSubmittingLeadComplete = false;
     }
 }
 
@@ -802,7 +836,21 @@ function showResults() {
     elements.resultsContainer.classList.remove('u-hidden');
     elements.resultsContainer.classList.add('fade-in');
     renderRadarChart();
-    startCelebration();
+
+    // Snap users directly to the graph after completion.
+    window.setTimeout(() => {
+        const chartContainer = elements.complexityRadar?.closest('.chart-container');
+        if (chartContainer instanceof HTMLElement) {
+            chartContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, 120);
+
+    if (!state.hasSentLeadComplete) {
+        window.setTimeout(() => {
+            void submitFinalScope();
+        }, 220);
+    }
+
     triggerConfetti();
 }
 
@@ -883,10 +931,6 @@ function handleResultsAction(event) {
     }
 
     const { action } = button.dataset;
-    if (action === 'submit-scope') {
-        void submitFinalScope(button);
-        return;
-    }
     if (action === 'edit') {
         restoreWizardForEditing();
         return;
@@ -894,6 +938,45 @@ function handleResultsAction(event) {
     if (action === 'reset') {
         resetAllData();
     }
+}
+
+function initInteractiveModifiers() {
+    // Avatar scale on hover
+    const avatarRing = document.querySelector('.hero__avatar-ring');
+    if (avatarRing) {
+        const avatarImg = avatarRing.querySelector('.hero__avatar-image');
+        if (avatarImg) {
+            avatarRing.addEventListener('mouseenter', () => avatarImg.classList.add('hero__avatar-image-scaled'));
+            avatarRing.addEventListener('mouseleave', () => avatarImg.classList.remove('hero__avatar-image-scaled'));
+            avatarRing.addEventListener('focus', () => avatarImg.classList.add('hero__avatar-image-scaled'), true);
+            avatarRing.addEventListener('blur', () => avatarImg.classList.remove('hero__avatar-image-scaled'), true);
+        }
+    }
+
+    // Feature list check highlight on hover
+    document.querySelectorAll('.feature-list__option').forEach((option) => {
+        const check = option.querySelector('.feature-list__check');
+        if (check) {
+            option.addEventListener('mouseenter', () => check.classList.add('feature-list__check-highlighted'));
+            option.addEventListener('mouseleave', () => check.classList.remove('feature-list__check-highlighted'));
+        }
+    });
+
+    // Feature list card checked state modifier
+    document.querySelectorAll('.feature-list__checkbox').forEach((checkbox) => {
+        const card = checkbox.nextElementSibling;
+        if (card && card.classList.contains('feature-list__card')) {
+            const syncModifier = () => {
+                if (checkbox.checked) {
+                    card.classList.add('feature-list__card-checked');
+                } else {
+                    card.classList.remove('feature-list__card-checked');
+                }
+            };
+            checkbox.addEventListener('change', syncModifier);
+            syncModifier();
+        }
+    });
 }
 
 function initEventListeners() {
@@ -907,11 +990,17 @@ function initEventListeners() {
 function init() {
     loadPersistedData();
     initEventListeners();
+    initInteractiveModifiers();
+    updateHeroCardVisibility();
 
     if (state.isFinished) {
         elements.wizardContainer.classList.add('u-hidden');
         elements.resultsContainer.classList.remove('u-hidden');
         renderRadarChart();
+
+        if (!state.hasSentLeadComplete) {
+            void submitFinalScope();
+        }
         return;
     }
 
